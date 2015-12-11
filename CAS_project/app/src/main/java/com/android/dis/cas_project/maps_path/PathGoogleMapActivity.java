@@ -16,8 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.cas.cas.MyService;
-import com.example.cas.cas.R;
+import com.android.dis.cas_project.MyService;
+import com.android.dis.cas_project.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -39,12 +39,12 @@ public class PathGoogleMapActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_path_google_map);
+        //setContentView(R.layout.activity_path_google_map);
         SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         googleMap = fm.getMap();
 
-        route = (Button) findViewById(R.id.route2);
+        //route = (Button) findViewById(R.id.route2);
 
         name_order = getIntent().getStringExtra("name");
         dol = getIntent().getDoubleExtra("dolgota", dol);

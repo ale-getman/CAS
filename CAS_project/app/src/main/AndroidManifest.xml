@@ -34,6 +34,9 @@
             android:name=".WorkspaceActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".WorkspaceDriver"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".WorkspaceManagerActivity"
             android:screenOrientation="portrait" />
 

@@ -208,7 +208,7 @@ public class MainActivity extends Activity {
                 if(TYPE.equals("водитель"))
                 {
                     //посылаем на вторую активность полученные параметры
-                    Intent intent = new Intent(MainActivity.this, WorkspaceActivity.class);
+                    Intent intent = new Intent(MainActivity.this, WorkspaceDriver.class);
                     //то что куда мы будем передавать и что, putExtra(куда, что);
                     intent.putExtra(WorkspaceActivity.JsonURL, response.toString());
 
