@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">CAS_project</string>
+
+    <!--<string name="adress">http://82.146.55.175//login_a.php</string>
+    <string name="adress_2">http://82.146.55.175//accept.php</string>
+    <string name="adress_3">http://82.146.55.175//Upload_image_ANDROID//upload_image.php</string>
+    <string name="adress_4">http://82.146.55.175//login_u.php</string>
+    <string name="adress_5">http://82.146.55.175//version.php</string>
+    <string name="adress_6">http://82.146.55.175//add_zakaz.php</string>-->
+    <string name="adress">http://82.146.52.50//dis//login_a.php</string>
+    <string name="adress_2">http://82.146.52.50//dis//accept.php</string>
+    <string name="adress_3">http://82.146.52.50//dis//Upload_image_ANDROID//upload_image.php</string>
+    <string name="adress_4">http://82.146.52.50//dis//login_u.php</string>
+    <string name="adress_5">http://82.146.52.50//dis//version.php</string>
+    <string name="adress_6">http://82.146.52.50//dis//add_zakaz.php</string>
+    <string name="adress_7">http://82.146.52.50//dis//drivers.php</string>
+    <string name="adress_8">http://82.146.52.50/dis/cas.apk</string>
+    <string name="text_tab1">Это первая вкладка</string>
+    <string name="text_tab2">Это вторая вкладка</string>
+    <string name="text_tab3">Это третья вкладка</string>
+    <string name="text_tab_header">Свой заголовок</string>
+    <string name="versionCode">1</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

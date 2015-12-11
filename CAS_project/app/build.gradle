@@ -4,6 +4,11 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
     defaultConfig {
         applicationId "com.android.dis.cas_project"
         minSdkVersion 16
@@ -22,6 +27,10 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile files('C:/Users/User/StudioProjects/CAS_2/CAS/CAS_project/libs/apache-httpcomponents-httpclient.jar')
+    compile files('C:/Users/User/StudioProjects/CAS_2/CAS/CAS_project/libs/http-core-4.1.jar')
+    compile files('C:/Users/User/StudioProjects/CAS_2/CAS/CAS_project/libs/universal-image-loader-1.9.4.jar')
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    compile 'com.google.android.gms:play-services:8.1.0'
 }
