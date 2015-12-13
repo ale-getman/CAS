@@ -44,6 +44,7 @@ import java.util.Locale;
  * Created by User on 11.12.2015.
  */
 public class WorkspaceDriver extends AppCompatActivity {
+
     private static final int LAYOUT = R.layout.workspace_driver;
 
     private Toolbar toolbar;

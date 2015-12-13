@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/linearLayout2"
+        android:layout_below="@+id/linearLayout"
+        android:layout_weight="1"
+        android:layout_marginTop="5dp"
+        android:weightSum="2"
+        android:background="#eeeeee">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Кодировка заказа"
+            android:id="@+id/zakazName"
+            android:layout_below="@+id/editText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#101f2e"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textCapCharacters"
+            android:id="@+id/zakaz_name"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/editText"
+            android:layout_alignEnd="@+id/editText"
+            android:layout_gravity="left"
+            android:background="@drawable/edit_text_style"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Введите кодировку услуги"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Тип техники"
+            android:id="@+id/zakazTech"
+            android:layout_below="@+id/editText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#101f2e"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:id="@+id/zakaz_tech"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/editText"
+            android:layout_alignEnd="@+id/editText"
+            android:layout_gravity="left"
+            android:background="@drawable/edit_text_style"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Введите тип техники"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Адрес"
+            android:id="@+id/zakazAddress"
+            android:layout_below="@+id/editText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#101f2e"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:id="@+id/zakaz_address"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/editText"
+            android:layout_alignEnd="@+id/editText"
+            android:layout_gravity="left"
+            android:background="@drawable/edit_text_style"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Введите адрес "/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Выбрать адрес на карте"
+            android:id="@+id/zakaz_maps"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/btn_style"
+            style="@style/btn_text_style"
+            android:layout_gravity="center_horizontal|bottom"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:layout_margin="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Создать заказ"
+            android:id="@+id/zakaz_send"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/btn_style"
+            style="@style/btn_text_style"
+            android:layout_gravity="center_horizontal|bottom"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:layout_margin="25dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

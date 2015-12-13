@@ -1,6 +1,7 @@
 package com.android.dis.cas_project.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,8 +18,10 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.android.dis.cas_project.MainActivity;
 import com.android.dis.cas_project.R;
 import com.android.dis.cas_project.WorkspaceManager;
+import com.android.dis.cas_project.ZakazActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,7 +71,6 @@ public class FragmentOrdersManager extends AbstractTabFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
         listView = (ListView) view.findViewById(R.id.list);
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
 
         JSONURL(WorkspaceManager.st_json);
         return view;
@@ -154,22 +156,8 @@ public class FragmentOrdersManager extends AbstractTabFragment{
                 listView.setDividerHeight(1);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        /*Intent intent = new Intent(WorkspaceManagerActivity.this, TabOrder.class);
-                        intent.putExtra("login", log);
-                        intent.putExtra("password", pas);
-                        intent.putExtra("dolgota", dol);
-                        intent.putExtra("shirota", shi);
-                        intent.putExtra("id", myBooks.get(position).get(ID).toString());
-                        intent.putExtra("name", myBooks.get(position).get(NAME).toString());
-                        intent.putExtra("technic", myBooks.get(position).get(TECHNIC).toString());
-                        intent.putExtra("status", myBooks.get(position).get(STATUS).toString());
-                        intent.putExtra("who", myBooks.get(position).get(WHO).toString());
-                        intent.putExtra("loc_x", myBooks.get(position).get(LOC_X).toString());
-                        intent.putExtra("loc_y", myBooks.get(position).get(LOC_Y).toString());
-                        intent.putExtra("type", myBooks.get(position).get(TYPE).toString());
-                        intent.putExtra("address", myBooks.get(position).get(ADDRESS).toString());
-                        intent.putExtra("image_url", myBooks.get(position).get(IMAGE_URL).toString());
-                        startActivity(intent);*/
+                        Intent intent = new Intent(frg_context, MainActivity.class);
+                        startActivity(intent);
                     }
                 });
             }

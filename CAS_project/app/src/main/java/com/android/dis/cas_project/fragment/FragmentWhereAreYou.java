@@ -21,7 +21,7 @@ public class FragmentWhereAreYou extends AbstractTabFragment{
         FragmentWhereAreYou fragment = new FragmentWhereAreYou();
         fragment.setArguments(args);
         fragment.setContext(context);
-        fragment.setTitle(context.getString(R.string.tab_maps_drivers));
+        fragment.setTitle(context.getString(R.string.tab_where_are_you));
 
         return fragment;
     }

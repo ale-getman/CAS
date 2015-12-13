@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -70,12 +71,22 @@ public class WorkspaceManager extends AppCompatActivity {
     public SimpleDateFormat df;
     public String add;
     public static String st_json;
+    public FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WorkspaceManager.this, ZakazActivity.class);
+                startActivity(intent);
+            }
+        });
 
         local = new Locale("ru","RU");
         df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss",local);

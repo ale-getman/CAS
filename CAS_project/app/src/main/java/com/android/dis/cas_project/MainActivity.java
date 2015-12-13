@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbarText));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
