@@ -152,7 +152,7 @@ public class WorkspaceActivity extends Activity {
                 {
                     myBooks.add(hm);
                     adapter = new MySimpleAdapter(WorkspaceActivity.this, myBooks, R.layout.list_2,
-                            new String[]{NAME, TECHNIC, WHO, STATUS, STATUS}, new int[]{R.id.text1, R.id.text2, R.id.text3, R.id.text4, R.id.image_status});
+                            new String[]{NAME, TECHNIC, WHO, STATUS}, new int[]{R.id.text1, R.id.text2, R.id.text3, R.id.image_status});
                 }
 
                 //выводим в листвбю

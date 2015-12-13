@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#ffd180</color>
     <color name="mainBackground">#f2f2f2</color>
     <color name="colorAccent">#ffffff</color>
+    <color name="colorWhite">#ffffff</color>
     <color name="toolbarText">#000000</color>
     <color name="inwork">#ffbb34</color>
     <color name="open">#9acc02</color>

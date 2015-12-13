@@ -1,28 +1,36 @@
 package com.android.dis.cas_project;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.TabHost;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.android.dis.cas_project.adapter.TabsFragmentAdapter;
-import com.android.dis.cas_project.adapter.TabsFragmentAdapter_2;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
@@ -35,29 +43,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by User on 11.12.2015.
- */
-public class WorkspaceDriver extends AppCompatActivity {
-    private static final int LAYOUT = R.layout.workspace_driver;
+public class WorkspaceManager extends AppCompatActivity {
+
+    private static final int LAYOUT = R.layout.workspace_manager;
 
     private Toolbar toolbar;
     private ViewPager viewPager;
 
     public static String JsonURL;
-    public double dol, shi;
-    public String buf, buf_json2;
-    public String dolstr, shistr;
+    public double dol,shi;
+    public String buf,buf_json2;
+    public String dolstr,shistr;
     public GPSTracker gps;
-    public String log, pas;
-    public static String st_log, st_pas;
+    public String log,pas;
+    public static String st_log,st_pas;
     public ProgressDialog dialog2;
-    public String version, flag;
+    public String version,flag;
     public NotificationManager nm;
     public Locale local;
     public SimpleDateFormat df;
@@ -70,8 +77,8 @@ public class WorkspaceDriver extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
-        local = new Locale("ru", "RU");
-        df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", local);
+        local = new Locale("ru","RU");
+        df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss",local);
 
         log = new String(getIntent().getStringExtra("login"));
         pas = new String(getIntent().getStringExtra("password"));
@@ -101,7 +108,7 @@ public class WorkspaceDriver extends AppCompatActivity {
 
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        TabsFragmentAdapter_2 adapter = new TabsFragmentAdapter_2(this, getSupportFragmentManager());
+        TabsFragmentAdapter adapter = new TabsFragmentAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -115,9 +122,9 @@ public class WorkspaceDriver extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void GPSsetting() {
+    public void GPSsetting(){
 
-        if (gps.canGetLocation()) {
+        if(gps.canGetLocation()) {
 
             dol = gps.getLongitude();
             buf = "Долгота: " + dol;
@@ -126,7 +133,7 @@ public class WorkspaceDriver extends AppCompatActivity {
             shi = gps.getLatitude();
             buf = "Широта: " + shi;
             shistr = "" + shi;
-        } else {
+        }else{
             // can't get location
             // GPS or Network is not enabled
             // Ask user to enable GPS/network in settings
@@ -134,7 +141,7 @@ public class WorkspaceDriver extends AppCompatActivity {
         }
     }
 
-    public void check_version() {
+    public void check_version(){
         version = getString(R.string.versionCode);
         new RequestTask_version().execute(getString(R.string.adress_5));
     }
@@ -179,7 +186,7 @@ public class WorkspaceDriver extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
 
-            dialog2 = new ProgressDialog(WorkspaceDriver.this);
+            dialog2 = new ProgressDialog(WorkspaceManager.this);
             dialog2.setMessage("Загружаюсь...");
             dialog2.setIndeterminate(true);
             dialog2.setCancelable(true);
@@ -199,7 +206,7 @@ public class WorkspaceDriver extends AppCompatActivity {
             flag = urls.getJSONObject(0).getString("flag").toString();
             Log.d("LOGI", "FLAG_version: " + flag);
 
-            if (flag.equals("false"))
+            if(flag.equals("false"))
                 sendNotif();
 
         } catch (JSONException e) {

@@ -210,7 +210,7 @@ public class MainActivity extends Activity {
                     //посылаем на вторую активность полученные параметры
                     Intent intent = new Intent(MainActivity.this, WorkspaceDriver.class);
                     //то что куда мы будем передавать и что, putExtra(куда, что);
-                    intent.putExtra(WorkspaceActivity.JsonURL, response.toString());
+                    intent.putExtra(WorkspaceDriver.JsonURL, response.toString());
 
                     intent.putExtra("login", log);
                     intent.putExtra("password", pas);
@@ -220,9 +220,9 @@ public class MainActivity extends Activity {
                 else
                 {
                     //посылаем на вторую активность полученные параметры
-                    Intent intent = new Intent(MainActivity.this, WorkspaceManagerActivity.class);
+                    Intent intent = new Intent(MainActivity.this, WorkspaceManager.class);
                     //то что куда мы будем передавать и что, putExtra(куда, что);
-                    intent.putExtra(WorkspaceManagerActivity.JsonURL, response.toString());
+                    intent.putExtra(WorkspaceManager.JsonURL, response.toString());
 
                     intent.putExtra("login", log);
                     intent.putExtra("password", pas);
