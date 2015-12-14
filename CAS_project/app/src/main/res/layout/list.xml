@@ -8,28 +8,27 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
 
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:orientation="horizontal"
-            android:layout_height="wrap_content"
-            android:weightSum="3">
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="56dp"
                 android:orientation="vertical"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
+                android:layout_height="56dp"
                 android:layout_marginLeft="16dp"
                 android:layout_gravity="center">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:id="@+id/image_status"
-                    android:src="@drawable/ic_open"
+                    android:src="@drawable/open_order"
                     android:layout_weight="1"
                     android:layout_gravity="center"/>
 
@@ -39,7 +38,7 @@
                 android:layout_width="fill_parent"
                 android:orientation="vertical"
                 android:layout_height="wrap_content"
-                android:layout_weight="2">
+                android:layout_gravity="center">
 
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"

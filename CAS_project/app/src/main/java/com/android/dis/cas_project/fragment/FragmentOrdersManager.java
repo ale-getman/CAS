@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.android.dis.cas_project.MainActivity;
 import com.android.dis.cas_project.R;
+import com.android.dis.cas_project.TabOrder;
 import com.android.dis.cas_project.WorkspaceManager;
 import com.android.dis.cas_project.ZakazActivity;
 
@@ -71,7 +72,7 @@ public class FragmentOrdersManager extends AbstractTabFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
         listView = (ListView) view.findViewById(R.id.list);
-
+        WorkspaceManager.fab.show();
         JSONURL(WorkspaceManager.st_json);
         return view;
     }
@@ -151,12 +152,26 @@ public class FragmentOrdersManager extends AbstractTabFragment{
                 //выводим в листвбю
                 listView.setAdapter(adapter);
                 listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                ColorDrawable divcolor = new ColorDrawable(Color.parseColor("#FF12212f"));
+                ColorDrawable divcolor = new ColorDrawable(Color.parseColor("#FFD6D6D6"));
                 listView.setDivider(divcolor);
-                listView.setDividerHeight(1);
+                listView.setDividerHeight(3);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(frg_context, MainActivity.class);
+                        Intent intent = new Intent(frg_context, TabOrder.class);
+                        intent.putExtra("login", WorkspaceManager.st_log);
+                        intent.putExtra("password", WorkspaceManager.st_pas);
+                        intent.putExtra("dolgota", WorkspaceManager.st_dol);
+                        intent.putExtra("shirota", WorkspaceManager.st_shi);
+                        intent.putExtra("id", myBooks.get(position).get(ID).toString());
+                        intent.putExtra("name", myBooks.get(position).get(NAME).toString());
+                        intent.putExtra("technic", myBooks.get(position).get(TECHNIC).toString());
+                        intent.putExtra("status", myBooks.get(position).get(STATUS).toString());
+                        intent.putExtra("who", myBooks.get(position).get(WHO).toString());
+                        intent.putExtra("loc_x", myBooks.get(position).get(LOC_X).toString());
+                        intent.putExtra("loc_y", myBooks.get(position).get(LOC_Y).toString());
+                        intent.putExtra("type", myBooks.get(position).get(TYPE).toString());
+                        intent.putExtra("address", myBooks.get(position).get(ADDRESS).toString());
+                        intent.putExtra("image_url", myBooks.get(position).get(IMAGE_URL).toString());
                         startActivity(intent);
                     }
                 });
@@ -182,15 +197,15 @@ public class FragmentOrdersManager extends AbstractTabFragment{
             if (v.getId() == R.id.image_status) {
 
                 if(value.equals("открыт")) {
-                    v.setImageResource(R.drawable.ic_open);
+                    v.setImageResource(R.drawable.open_order);
                 }
                 else
                 if(value.equals("закрыт")) {
-                    v.setImageResource(R.drawable.ic_close);
+                    v.setImageResource(R.drawable.close_order);
                 }
                 else
                 if(value.equals("выполняется")) {
-                    v.setImageResource(R.drawable.ic_inwork);
+                    v.setImageResource(R.drawable.inwork_order);
                 }
             }
         }

@@ -59,8 +59,10 @@ public class WorkspaceManager extends AppCompatActivity {
 
     public static String JsonURL;
     public double dol,shi;
+    public static double st_dol,st_shi;
     public String buf,buf_json2;
     public String dolstr,shistr;
+    public static String st_dolstr,st_shistr;
     public GPSTracker gps;
     public String log,pas;
     public static String st_log,st_pas;
@@ -71,7 +73,7 @@ public class WorkspaceManager extends AppCompatActivity {
     public SimpleDateFormat df;
     public String add;
     public static String st_json;
-    public FloatingActionButton fab;
+    public static FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,10 +142,14 @@ public class WorkspaceManager extends AppCompatActivity {
             dol = gps.getLongitude();
             buf = "Долгота: " + dol;
             dolstr = "" + dol;
+            st_dol = dol;
+            st_dolstr = dolstr;
 
             shi = gps.getLatitude();
             buf = "Широта: " + shi;
             shistr = "" + shi;
+            st_shi = shi;
+            st_shistr = shistr;
         }else{
             // can't get location
             // GPS or Network is not enabled

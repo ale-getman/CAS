@@ -9,4 +9,5 @@
     <color name="inwork">#ffbb34</color>
     <color name="open">#9acc02</color>
     <color name="close">#ff4545</color>
+    <color name="grey">#d6d6d6</color>
 </resources>

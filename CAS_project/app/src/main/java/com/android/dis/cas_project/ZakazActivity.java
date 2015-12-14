@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +36,7 @@ public class ZakazActivity extends Activity {
     private ProgressDialog dialog;
     public Date d;
     public SimpleDateFormat format1;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,7 @@ public class ZakazActivity extends Activity {
                 startActivity(intent);*/
             }
         });
-
+        initToolbar();
     }
 
     class RequestTask extends AsyncTask<String, String, String> {
@@ -148,5 +151,17 @@ public class ZakazActivity extends Activity {
     protected void onResume() {
         //zakaz_address.setText(MapsZakaz.add);
         super.onResume();
+    }
+
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });
     }
 }

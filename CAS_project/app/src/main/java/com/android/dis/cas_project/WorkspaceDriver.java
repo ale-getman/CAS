@@ -52,8 +52,10 @@ public class WorkspaceDriver extends AppCompatActivity {
 
     public static String JsonURL;
     public double dol, shi;
+    public static double st_dol, st_shi;
     public String buf, buf_json2;
     public String dolstr, shistr;
+    public static String st_dolstr,st_shistr;
     public GPSTracker gps;
     public String log, pas;
     public static String st_log, st_pas;
@@ -123,10 +125,14 @@ public class WorkspaceDriver extends AppCompatActivity {
             dol = gps.getLongitude();
             buf = "Долгота: " + dol;
             dolstr = "" + dol;
+            st_dolstr = dolstr;
+            st_dol = dol;
 
             shi = gps.getLatitude();
             buf = "Широта: " + shi;
             shistr = "" + shi;
+            st_shistr = shistr;
+            st_shi = shi;
         } else {
             // can't get location
             // GPS or Network is not enabled

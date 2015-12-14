@@ -15,21 +15,20 @@
             android:layout_width="fill_parent"
             android:orientation="horizontal"
             android:layout_height="wrap_content"
-            android:weightSum="3">
+            android:layout_marginBottom="5dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="56dp"
                 android:orientation="vertical"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
+                android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="16dp">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:id="@+id/image_status"
-                    android:src="@drawable/ic_open"
+                    android:src="@drawable/open_order"
                     android:layout_weight="1"
                     android:layout_gravity="center"/>
 
@@ -39,12 +38,12 @@
                 android:layout_width="fill_parent"
                 android:orientation="vertical"
                 android:layout_height="wrap_content"
-                android:layout_weight="2">
+                android:layout_gravity="center">
 
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/text1"
-                    android:textSize="25dip"
+                    android:textSize="20dip"
                     android:text="This is text1"
                     android:layout_marginLeft="5dp"
                     android:textColor="#000000" />
