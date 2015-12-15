@@ -2,6 +2,8 @@ package com.android.dis.cas_project;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
@@ -20,6 +23,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +41,7 @@ public class ZakazActivity extends Activity {
     public Date d;
     public SimpleDateFormat format1;
     private Toolbar toolbar;
+    public TextView t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,9 @@ public class ZakazActivity extends Activity {
 
         d = new Date();
         format1 = new SimpleDateFormat("ddMMyy");
+
+        t1 = (TextView) findViewById(R.id.zakaz_name);
+        t1.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/RobotoCondensedRegular.ttf"));
 
         zakaz_name = (EditText) findViewById(R.id.zakaz_name);
         zakaz_technic = (EditText) findViewById(R.id.zakaz_tech);
@@ -75,8 +83,8 @@ public class ZakazActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(ZakazActivity.this, MapsZakaz.class);
-                startActivity(intent);*/
+                Intent intent = new Intent(ZakazActivity.this, MapsZakaz.class);
+                startActivity(intent);
             }
         });
         initToolbar();

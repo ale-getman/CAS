@@ -86,6 +86,11 @@
         <activity android:name=".MapSoloDriver"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".MapsZakaz"
+            android:screenOrientation="portrait" >
+        </activity>
+
     </application>
 
 </manifest>

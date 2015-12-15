@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.android.dis.cas_project.GPSTracker;
 import com.android.dis.cas_project.MapSoloDriver;
 import com.android.dis.cas_project.R;
 import com.android.dis.cas_project.WorkspaceManager;
@@ -31,9 +34,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -55,6 +62,14 @@ public class FragmentDriversManager extends AbstractTabFragment {
     public static final String adr = "address";
     public static ArrayList<HashMap<String, Object>> myBooks;
     public static Context frg_context;
+    public String time_mil;
+    public Locale local;
+    public SimpleDateFormat df;
+    public Date currentDate;
+    public String dol,shi,add;
+    public static double LAT,LNG;
+    public GPSTracker gps;
+
 
     public static FragmentDriversManager getInstance(Context context) {
         Bundle args = new Bundle();
@@ -63,6 +78,7 @@ public class FragmentDriversManager extends AbstractTabFragment {
         fragment.setContext(context);
         fragment.setTitle(context.getString(R.string.tab_drivers_manager));
         frg_context = context;
+        Log.d("LOGII", "222222---");
         return fragment;
     }
 
@@ -70,8 +86,11 @@ public class FragmentDriversManager extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        Log.d("LOGII", "2222222");
         list = (ListView) view.findViewById(R.id.list_driver);
-        WorkspaceManager.fab.show();
+        local = new Locale("ru","RU");
+        df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss",local);
+        gps = new GPSTracker(frg_context);
         new RequestTask().execute(getString(R.string.adress_7));
         return view;
     }
@@ -157,9 +176,9 @@ public class FragmentDriversManager extends AbstractTabFragment {
                         new String[] { name, tech, number, date, adr}, new int[] { R.id.text1, R.id.text2, R.id.text3 , R.id.text4 , R.id.text5});
                 list.setAdapter(adapter);
                 list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                ColorDrawable divcolor = new ColorDrawable(Color.parseColor("#FF12212f"));
+                ColorDrawable divcolor = new ColorDrawable(Color.parseColor("#FFD6D6D6"));
                 list.setDivider(divcolor);
-                list.setDividerHeight(2);
+                list.setDividerHeight(3);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Intent intent = new Intent(frg_context, MapSoloDriver.class);
@@ -183,6 +202,50 @@ public class FragmentDriversManager extends AbstractTabFragment {
                                List<? extends Map<String, ?>> data, int resource,
                                String[] from, int[] to) {
             super(context, data, resource, from, to);
+        }
+    }
+
+    /*@Override
+    public void onResume() {
+        currentDate = new Date();
+        time_mil = df.format(currentDate);
+        GPSsetting();
+        KorToAdr(LAT, LNG);
+        new RequestTask().execute(getString(R.string.adress_7));
+        super.onResume();
+    }*/
+
+    public void KorToAdr(double lt, double lg){
+
+        Geocoder geoCoder = new Geocoder(
+                frg_context, Locale.getDefault());
+        try {
+            List<Address> addresses = geoCoder.getFromLocation(
+                    lt,
+                    lg, 1);
+
+            if (addresses.size() > 0) {
+                for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex();
+                     i++)
+                    add += addresses.get(0).getAddressLine(i) + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void GPSsetting(){
+
+        if(gps.canGetLocation()) {
+            dol = "" + gps.getLongitude();
+            shi = "" + gps.getLatitude();
+            LAT = gps.getLatitude();
+            LNG = gps.getLongitude();
+        }else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gps.showSettingsAlert();
         }
     }
 }

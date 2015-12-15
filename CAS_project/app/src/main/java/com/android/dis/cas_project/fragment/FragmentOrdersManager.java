@@ -1,9 +1,13 @@
 package com.android.dis.cas_project.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,25 +16,40 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.dis.cas_project.GPSTracker;
 import com.android.dis.cas_project.MainActivity;
 import com.android.dis.cas_project.R;
 import com.android.dis.cas_project.TabOrder;
+import com.android.dis.cas_project.WorkspaceDriver;
 import com.android.dis.cas_project.WorkspaceManager;
 import com.android.dis.cas_project.ZakazActivity;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -55,6 +74,16 @@ public class FragmentOrdersManager extends AbstractTabFragment{
     public MySimpleAdapter adapter;
     public static Context frg_context;
     private static final int LAYOUT = R.layout.fragment_orders_manager;
+    public static FloatingActionButton fab;
+    private ProgressDialog dialog;
+    public String response, time_mil;
+    public Locale local;
+    public SimpleDateFormat df;
+    public Date currentDate;
+    public String dol,shi,add;
+    public String log,pas;
+    public static double LAT,LNG;
+    public GPSTracker gps;
 
     public static FragmentOrdersManager getInstance(Context context) {
         Bundle args = new Bundle();
@@ -63,7 +92,7 @@ public class FragmentOrdersManager extends AbstractTabFragment{
         fragment.setContext(context);
         fragment.setTitle(context.getString(R.string.tab_orders_manager));
         frg_context = context;
-
+        Log.d("LOGII", "1111111----");
         return fragment;
     }
 
@@ -71,9 +100,46 @@ public class FragmentOrdersManager extends AbstractTabFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        Log.d("LOGII", "1111111");
         listView = (ListView) view.findViewById(R.id.list);
-        WorkspaceManager.fab.show();
+        local = new Locale("ru","RU");
+        df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss",local);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(frg_context, ZakazActivity.class);
+                startActivity(intent);
+            }
+        });
         JSONURL(WorkspaceManager.st_json);
+        log = WorkspaceManager.st_log;
+        pas = WorkspaceManager.st_pas;
+        gps = new GPSTracker(frg_context);
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            int state = 0;
+            int lastFirstVisibleElement = -1;
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                //Log.d("LOGI", "scrollState = " + scrollState);
+                state = -1;
+            }
+
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                /*Log.d("LOGI", "scroll: firstVisibleItem = " + firstVisibleItem
+                        + ", visibleItemCount" + visibleItemCount
+                        + ", totalItemCount" + totalItemCount);*/
+                //lastFirstVisibleElement = firstVisibleItem;
+                if (lastFirstVisibleElement > firstVisibleItem){
+                    Log.d("LOGI", "Scroll up");
+                }
+                else if (lastFirstVisibleElement < firstVisibleItem){
+                    Log.d("LOGI", "Scroll down");
+                }
+                lastFirstVisibleElement = firstVisibleItem;
+            }
+        });
         return view;
     }
 
@@ -140,7 +206,7 @@ public class FragmentOrdersManager extends AbstractTabFragment{
                     //--------------------------
 
                     adapter = new MySimpleAdapter(frg_context, myBooks, R.layout.list,
-                            new String[] { NAME, TECHNIC, STATUS, STATUS}, new int[] { R.id.text1, R.id.text2, R.id.text3 , R.id.image_status});
+                            new String[] { NAME, TECHNIC, STATUS, STATUS}, new int[] { R.id.text1, R.id.text2, R.id.text3, R.id.image_status});
                 }
                 else
                 {
@@ -175,6 +241,7 @@ public class FragmentOrdersManager extends AbstractTabFragment{
                         startActivity(intent);
                     }
                 });
+
             }
         } catch (JSONException e) {
             Log.e("log_tag", "Error parsing data " + e.toString());
@@ -208,6 +275,111 @@ public class FragmentOrdersManager extends AbstractTabFragment{
                     v.setImageResource(R.drawable.inwork_order);
                 }
             }
+        }
+    }
+
+    /*@Override
+    public void onResume() {
+        currentDate = new Date();
+        time_mil = df.format(currentDate);
+        GPSsetting();
+        KorToAdr(LAT, LNG);
+        new RequestTask().execute(getString(R.string.adress));
+        super.onResume();
+    }*/
+
+    class RequestTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            try {
+                //создаем запрос на сервер
+                DefaultHttpClient hc = new DefaultHttpClient();
+                ResponseHandler<String> res = new BasicResponseHandler();
+                //он у нас будет посылать post запрос
+                HttpPost postMethod = new HttpPost(params[0]);
+                //будем передавать два параметра
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
+                //передаем параметры из наших текстбоксов
+                //логин
+                nameValuePairs.add(new BasicNameValuePair("login", log));
+                //пароль
+                nameValuePairs.add(new BasicNameValuePair("pass", pas));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_x", dol));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_y", shi));
+
+                nameValuePairs.add(new BasicNameValuePair("time", time_mil));
+
+                nameValuePairs.add(new BasicNameValuePair("address", add));
+                Log.d("LOGI", nameValuePairs.toString());
+                //собераем их вместе и посылаем на сервер
+                postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+                //получаем ответ от сервера
+                //String
+                response = hc.execute(postMethod, res);
+                Log.d("LOGI", response.toString());
+                JSONURL(response.toString());
+
+            } catch (Exception e) {
+                System.out.println("Exp=" + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            dialog.dismiss();
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            dialog = new ProgressDialog(frg_context);
+            dialog.setMessage("Загружаюсь...");
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(true);
+            dialog.show();
+            super.onPreExecute();
+        }
+    }
+
+    public void KorToAdr(double lt, double lg){
+
+        Geocoder geoCoder = new Geocoder(
+                frg_context, Locale.getDefault());
+        try {
+            List<Address> addresses = geoCoder.getFromLocation(
+                    lt,
+                    lg, 1);
+
+            if (addresses.size() > 0) {
+                for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex();
+                     i++)
+                    add += addresses.get(0).getAddressLine(i) + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void GPSsetting(){
+
+        if(gps.canGetLocation()) {
+            dol = "" + gps.getLongitude();
+            shi = "" + gps.getLatitude();
+            LAT = gps.getLatitude();
+            LNG = gps.getLongitude();
+        }else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gps.showSettingsAlert();
         }
     }
 }

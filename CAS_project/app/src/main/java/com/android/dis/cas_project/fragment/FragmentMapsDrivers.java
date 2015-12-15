@@ -68,6 +68,7 @@ public class FragmentMapsDrivers extends AbstractTabFragment implements OnMapRea
         fragment.setContext(context);
         fragment.setTitle(context.getString(R.string.tab_maps_drivers));
         frg_context = context;
+        Log.d("LOGII", "3333333-------");
         return fragment;
     }
 
@@ -89,8 +90,8 @@ public class FragmentMapsDrivers extends AbstractTabFragment implements OnMapRea
         } catch (InflateException e) {
     /* map is already there, just return view as it is */
         }
+        Log.d("LOGII", "3333333");
         initToolbar();
-        WorkspaceManager.fab.hide();
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         if (mapFragment == null) {
