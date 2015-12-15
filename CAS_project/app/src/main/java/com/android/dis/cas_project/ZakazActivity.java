@@ -51,9 +51,6 @@ public class ZakazActivity extends Activity {
         d = new Date();
         format1 = new SimpleDateFormat("ddMMyy");
 
-        t1 = (TextView) findViewById(R.id.zakaz_name);
-        t1.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/RobotoCondensedRegular.ttf"));
-
         zakaz_name = (EditText) findViewById(R.id.zakaz_name);
         zakaz_technic = (EditText) findViewById(R.id.zakaz_tech);
         zakaz_address = (EditText) findViewById(R.id.zakaz_address);
