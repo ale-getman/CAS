@@ -54,7 +54,6 @@ public class ZakazActivity extends Activity {
         zakaz_name = (EditText) findViewById(R.id.zakaz_name);
         zakaz_technic = (EditText) findViewById(R.id.zakaz_tech);
         zakaz_address = (EditText) findViewById(R.id.zakaz_address);
-
         zakaz_send = (Button) findViewById(R.id.zakaz_send);
         zakaz_maps = (Button) findViewById(R.id.zakaz_maps);
 
