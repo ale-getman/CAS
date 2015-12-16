@@ -47,6 +47,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,6 +74,10 @@ public class WorkspaceManager extends AppCompatActivity {
     public SimpleDateFormat df;
     public String add;
     public static String st_json;
+    public static String time_mil,response;
+    private ProgressDialog dialog;
+    public Date currentDate;
+    public static double LAT,LNG;
 
 
     @Override
@@ -135,12 +140,14 @@ public class WorkspaceManager extends AppCompatActivity {
             dolstr = "" + dol;
             st_dol = dol;
             st_dolstr = dolstr;
+            LNG = gps.getLongitude();
 
             shi = gps.getLatitude();
             buf = "Широта: " + shi;
             shistr = "" + shi;
             st_shi = shi;
             st_shistr = shistr;
+            LAT = gps.getLatitude();
         }else{
             // can't get location
             // GPS or Network is not enabled
@@ -247,5 +254,96 @@ public class WorkspaceManager extends AppCompatActivity {
 
         // отправляем
         nm.notify(1, noti);
+    }
+
+    @Override
+    protected void onPostResume() {
+        currentDate = new Date();
+        time_mil = df.format(currentDate);
+        GPSsetting();
+        KorToAdr(LAT, LNG);
+        new RequestTask().execute(getString(R.string.adress));
+        Log.d("LOGI", "PostResume");
+        super.onPostResume();
+    }
+
+    class RequestTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            try {
+                //создаем запрос на сервер
+                DefaultHttpClient hc = new DefaultHttpClient();
+                ResponseHandler<String> res = new BasicResponseHandler();
+                //он у нас будет посылать post запрос
+                HttpPost postMethod = new HttpPost(params[0]);
+                //будем передавать два параметра
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
+                //передаем параметры из наших текстбоксов
+                //логин
+                nameValuePairs.add(new BasicNameValuePair("login", log));
+                //пароль
+                nameValuePairs.add(new BasicNameValuePair("pass", pas));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_x", dolstr));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_y", shistr));
+
+                nameValuePairs.add(new BasicNameValuePair("time", time_mil));
+
+                nameValuePairs.add(new BasicNameValuePair("address", add));
+                //Log.d("LOGI", nameValuePairs.toString());
+                //собераем их вместе и посылаем на сервер
+                postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+                //получаем ответ от сервера
+                //String
+                response = hc.execute(postMethod, res);
+                //Log.d("LOGI", response.toString());
+                st_json = response;
+
+            } catch (Exception e) {
+                System.out.println("Exp=" + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            dialog.dismiss();
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            dialog = new ProgressDialog(WorkspaceManager.this);
+            dialog.setMessage("Загружаюсь...");
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(true);
+            dialog.show();
+            super.onPreExecute();
+        }
+    }
+
+    public void KorToAdr(double lt, double lg){
+
+        Geocoder geoCoder = new Geocoder(
+                getBaseContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geoCoder.getFromLocation(
+                    lt,
+                    lg, 1);
+
+            if (addresses.size() > 0) {
+                for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex();
+                     i++)
+                    add += addresses.get(0).getAddressLine(i) + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

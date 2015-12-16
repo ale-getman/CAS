@@ -11,60 +11,129 @@
         android:layout_weight="1.98">
 
         <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="4">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="125dp"
+                android:layout_height="35dp"
+                android:id="@+id/info"
+                android:src="@drawable/info"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"/>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Large Text"
-                android:textSize="25dip"
+                android:layout_gravity="center"
                 android:id="@+id/text_order1"
-                android:layout_weight="1"
-                android:layout_gravity="center_horizontal" />
+                android:gravity="center_vertical"
+                android:layout_weight="1"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Large Text"
-                android:id="@+id/text_technic1"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:layout_marginTop="10dp" />
+        </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Large Text"
-                android:id="@+id/text_address1"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:layout_marginTop="10dp" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Large Text"
-                android:id="@+id/text_status1"
-                android:layout_weight="1"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="10dp" />
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Техника: "
+                    android:id="@+id/tech"
+                    android:gravity="left|center_horizontal"/>
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Large Text"
+                    android:id="@+id/text_technic1"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Large Text"
-                android:id="@+id/text_accept1"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:layout_marginTop="10dp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Адрес: "
+                    android:id="@+id/adres"
+                    android:gravity="left|center_horizontal|top"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Large Text"
+                    android:id="@+id/text_address1"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Состояние: "
+                    android:id="@+id/sostoyanie"
+                    android:gravity="left|center_horizontal|top"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Large Text"
+                    android:id="@+id/text_accept1"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Статус: "
+                    android:id="@+id/status"
+                    android:gravity="left|center_vertical"/>
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="35dp"
+                    android:id="@+id/img_status"
+                    android:src="@drawable/open_order"
+                    android:layout_weight="1"
+                    android:gravity="center"/>
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.android.dis.cas_project.GPSTracker;
 import com.android.dis.cas_project.MapSoloDriver;
@@ -173,7 +175,7 @@ public class FragmentDriversManager extends AbstractTabFragment {
                 myBooks.add(hm);
 
                 adapter = new MySimpleAdapter(frg_context, myBooks, R.layout.list_driver_adapter,
-                        new String[] { name, tech, number, date, adr}, new int[] { R.id.text1, R.id.text2, R.id.text3 , R.id.text4 , R.id.text5});
+                        new String[] { name, tech, number, date, adr, tech}, new int[] { R.id.text1, R.id.text2, R.id.text3 , R.id.text4 , R.id.text5, R.id.image_status});
                 list.setAdapter(adapter);
                 list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 ColorDrawable divcolor = new ColorDrawable(Color.parseColor("#FFD6D6D6"));
@@ -202,6 +204,44 @@ public class FragmentDriversManager extends AbstractTabFragment {
                                List<? extends Map<String, ?>> data, int resource,
                                String[] from, int[] to) {
             super(context, data, resource, from, to);
+        }
+        @Override
+        public void setViewImage(ImageView v, String value) {
+            super.setViewImage(v, value);
+
+            if (v.getId() == R.id.image_status) {
+
+                if(value.equals(""))
+                    v.setImageResource(R.drawable.ic_manager);
+                else
+                    v.setImageResource(R.drawable.ic_driver);
+
+            }
+        }
+
+        @Override
+        public void setViewText(TextView v, String text) {
+            super.setViewText(v, text);
+
+            if(v.getId() == R.id.text2){
+                if(text.equals(""))
+                    v.setVisibility(View.GONE);
+                else
+                {
+                    v.setVisibility(View.VISIBLE);
+                    v.setText("Техника: " + text);
+                }
+            }
+
+            if(v.getId() == R.id.text3)
+                v.setText("Моб. номер: " + text);
+
+            if(v.getId() == R.id.text5)
+                v.setText("Местоположение: " + text);
+
+            if(v.getId() == R.id.text4)
+                v.setText("В приложении был: " + text);
+
         }
     }
 

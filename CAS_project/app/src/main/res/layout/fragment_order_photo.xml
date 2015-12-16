@@ -5,14 +5,14 @@
     android:background="@color/mainBackground">
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:layout_marginBottom="2dp"
         android:layout_marginTop="2dp"
-        android:src="@drawable/begin_img"
+        android:src="@drawable/ic_camera"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp" />
 
@@ -20,15 +20,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="3">
 
         <Button
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:text="Фото"
+            android:text="Сделать фотографию"
             android:id="@+id/photo2"
             android:background="@drawable/btn_style"
             style="@style/btn_text_style"
+            android:textSize="12dp"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1" />
 
@@ -39,8 +40,9 @@
             android:id="@+id/getimg2"
             android:background="@drawable/btn_style"
             style="@style/btn_text_style"
+            android:textSize="12dp"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="2" />
+            android:layout_weight="1" />
 
         <Button
             android:layout_width="0dp"
@@ -49,8 +51,9 @@
             android:id="@+id/send2"
             android:background="@drawable/btn_style"
             style="@style/btn_text_style"
+            android:textSize="12dp"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="2" />
+            android:layout_weight="1" />
 
     </LinearLayout>
 

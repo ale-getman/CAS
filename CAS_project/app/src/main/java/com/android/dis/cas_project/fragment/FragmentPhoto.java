@@ -379,7 +379,7 @@ public class FragmentPhoto extends AbstractTabFragment{
     @Override
     public void onResume() {
         super.onResume();
-        if(FragmentOrder.text_status.getText().toString().equals("закрыт"))
+        if(FragmentOrder.text_status.equals("закрыт"))
         {
             //if(TabOrder1.text_accept.getText().toString().contains(TabOrder1.log))
             if(!(TabOrder.type.equals("менеджер")))
