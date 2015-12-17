@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,12 +19,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.android.dis.cas_project.adapter.TabsFragmentAdapter;
 import com.android.dis.cas_project.adapter.TabsFragmentAdapter_2;
+import com.android.dis.cas_project.fragment.FragmentOrdersDriver;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
@@ -35,8 +39,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,6 +72,11 @@ public class WorkspaceDriver extends AppCompatActivity {
     public SimpleDateFormat df;
     public String add;
     public static String st_json;
+    public static String time_mil,response;
+    private ProgressDialog dialog;
+    public Date currentDate;
+    public static double LAT,LNG;
+    public String network_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +92,7 @@ public class WorkspaceDriver extends AppCompatActivity {
         st_log = log;
         st_pas = pas;
         startService(new Intent(this, MyService.class).putExtra("login", log));
-
+        network_status = "online";
         //принимаем параметр который мы послылали в manActivity
         Bundle extras = getIntent().getExtras();
         //превращаем в тип стринг для парсинга
@@ -100,6 +111,31 @@ public class WorkspaceDriver extends AppCompatActivity {
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+
+                    case R.id.close_app:
+                        stopService(new Intent(WorkspaceDriver.this, MyService.class));
+                        currentDate = new Date();
+                        time_mil = df.format(currentDate);
+                        GPSsetting();
+                        KorToAdr(LAT, LNG);
+                        network_status = "offline";
+                        new RequestTask_destroy().execute(getString(R.string.adress));
+                        Intent a = new Intent(WorkspaceDriver.this,MainActivity.class);
+                        a.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        toolbar.inflateMenu(R.menu.menu);
     }
 
     private void initTabs() {
@@ -114,6 +150,12 @@ public class WorkspaceDriver extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         stopService(new Intent(this, MyService.class));
+        currentDate = new Date();
+        time_mil = df.format(currentDate);
+        GPSsetting();
+        KorToAdr(LAT, LNG);
+        network_status = "offline";
+        new RequestTask_destroy().execute(getString(R.string.adress));
         Log.d("LOGI", "destroy destroy");
         super.onDestroy();
     }
@@ -127,12 +169,14 @@ public class WorkspaceDriver extends AppCompatActivity {
             dolstr = "" + dol;
             st_dolstr = dolstr;
             st_dol = dol;
+            LNG = gps.getLongitude();
 
             shi = gps.getLatitude();
             buf = "Широта: " + shi;
             shistr = "" + shi;
             st_shistr = shistr;
             st_shi = shi;
+            LAT = gps.getLatitude();
         } else {
             // can't get location
             // GPS or Network is not enabled
@@ -239,5 +283,152 @@ public class WorkspaceDriver extends AppCompatActivity {
 
         // отправляем
         nm.notify(1, noti);
+    }
+
+    @Override
+    protected void onPostResume() {
+        currentDate = new Date();
+        time_mil = df.format(currentDate);
+        GPSsetting();
+        KorToAdr(LAT, LNG);
+        new RequestTask().execute(getString(R.string.adress));
+        Log.d("LOGI", "PostResume " + time_mil);
+        super.onPostResume();
+    }
+
+    class RequestTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            try {
+                //создаем запрос на сервер
+                DefaultHttpClient hc = new DefaultHttpClient();
+                ResponseHandler<String> res = new BasicResponseHandler();
+                //он у нас будет посылать post запрос
+                HttpPost postMethod = new HttpPost(params[0]);
+                //будем передавать два параметра
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
+                //передаем параметры из наших текстбоксов
+                //логин
+                nameValuePairs.add(new BasicNameValuePair("login", log));
+                //пароль
+                nameValuePairs.add(new BasicNameValuePair("pass", pas));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_x", dolstr));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_y", shistr));
+
+                nameValuePairs.add(new BasicNameValuePair("time", time_mil));
+
+                nameValuePairs.add(new BasicNameValuePair("address", add));
+
+                nameValuePairs.add(new BasicNameValuePair("network_status", network_status));
+                //Log.d("LOGI", nameValuePairs.toString());
+                //собераем их вместе и посылаем на сервер
+                postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+                //получаем ответ от сервера
+                //String
+                response = hc.execute(postMethod, res);
+                //Log.d("LOGI", response.toString());
+                st_json = response;
+
+            } catch (Exception e) {
+                System.out.println("Exp=" + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            dialog.dismiss();
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            dialog = new ProgressDialog(WorkspaceDriver.this);
+            dialog.setMessage("Загружаюсь...");
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(true);
+            dialog.show();
+            super.onPreExecute();
+        }
+    }
+
+    public void KorToAdr(double lt, double lg){
+
+        Geocoder geoCoder = new Geocoder(
+                getBaseContext(), Locale.getDefault());
+        add = "";
+        try {
+            List<Address> addresses = geoCoder.getFromLocation(
+                    lt,
+                    lg, 1);
+
+            if (addresses.size() > 0) {
+                for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex();
+                     i++)
+                    add += addresses.get(0).getAddressLine(i) + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class RequestTask_destroy extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            try {
+                //создаем запрос на сервер
+                DefaultHttpClient hc = new DefaultHttpClient();
+                ResponseHandler<String> res = new BasicResponseHandler();
+                //он у нас будет посылать post запрос
+                HttpPost postMethod = new HttpPost(params[0]);
+                //будем передавать два параметра
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
+                //передаем параметры из наших текстбоксов
+                //логин
+                nameValuePairs.add(new BasicNameValuePair("login", log));
+                //пароль
+                nameValuePairs.add(new BasicNameValuePair("pass", pas));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_x", dolstr));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_y", shistr));
+
+                nameValuePairs.add(new BasicNameValuePair("time", time_mil));
+
+                nameValuePairs.add(new BasicNameValuePair("address", add));
+
+                nameValuePairs.add(new BasicNameValuePair("network_status", network_status));
+                //Log.d("LOGI", nameValuePairs.toString());
+                //собераем их вместе и посылаем на сервер
+                postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+                //получаем ответ от сервера
+                //String
+                response = hc.execute(postMethod, res);
+
+            } catch (Exception e) {
+                System.out.println("Exp=" + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
     }
 }

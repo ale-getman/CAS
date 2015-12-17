@@ -253,7 +253,9 @@ public class FragmentMapsDrivers extends AbstractTabFragment implements OnMapRea
                 number = urls.getJSONObject(i).getString("number").toString();
                 date = urls.getJSONObject(i).getString("date").toString();
                 posDriver = new LatLng(y,x);
-                mMap.addMarker(new MarkerOptions()
+
+                if(urls.getJSONObject(i).getString("status").toString().equals("online"))
+                    mMap.addMarker(new MarkerOptions()
                         .position(posDriver)
                         .title(name)
                         .snippet(tech + "\n" + number + "\n" + date));

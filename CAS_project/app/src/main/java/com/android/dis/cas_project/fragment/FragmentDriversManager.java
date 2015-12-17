@@ -172,9 +172,10 @@ public class FragmentDriversManager extends AbstractTabFragment {
                 hm.put(date, urls.getJSONObject(i).getString("date").toString());
                 hm.put(adr, urls.getJSONObject(i).getString("address").toString());
 
-                myBooks.add(hm);
+                if(urls.getJSONObject(i).getString("status").toString().equals("online"))
+                    myBooks.add(hm);
 
-                adapter = new MySimpleAdapter(frg_context, myBooks, R.layout.list_driver_adapter,
+                    adapter = new MySimpleAdapter(frg_context, myBooks, R.layout.list_driver_adapter,
                         new String[] { name, tech, number, date, adr, tech}, new int[] { R.id.text1, R.id.text2, R.id.text3 , R.id.text4 , R.id.text5, R.id.image_status});
                 list.setAdapter(adapter);
                 list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);

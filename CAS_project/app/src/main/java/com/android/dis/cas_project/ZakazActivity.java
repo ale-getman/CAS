@@ -71,6 +71,7 @@ public class ZakazActivity extends Activity {
                     dataZ = new String(format1.format(d));
                     Log.d("LOGI", "data: " + dataZ);
                     new RequestTask().execute(getString(R.string.adress_6));
+                    onBackPressed();
                 }
             }
         });
@@ -167,5 +168,10 @@ public class ZakazActivity extends Activity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

@@ -168,7 +168,7 @@ public class MainActivity extends Activity {
                 //он у нас будет посылать post запрос
                 HttpPost postMethod = new HttpPost(params[0]);
                 //будем передавать два параметра
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
                 //передаем параметры из наших текстбоксов
                 //логин
                 nameValuePairs.add(new BasicNameValuePair("login", log));
@@ -182,6 +182,8 @@ public class MainActivity extends Activity {
                 nameValuePairs.add(new BasicNameValuePair("time", time_mil));
 
                 nameValuePairs.add(new BasicNameValuePair("address", add));
+
+                nameValuePairs.add(new BasicNameValuePair("network_status", "online"));
                 Log.d("LOGI", nameValuePairs.toString());
                 //собераем их вместе и посылаем на сервер
                 postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));

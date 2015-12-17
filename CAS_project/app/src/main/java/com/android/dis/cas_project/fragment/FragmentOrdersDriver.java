@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -104,6 +105,24 @@ public class FragmentOrdersDriver extends AbstractTabFragment{
         df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss",local);
         gps = new GPSTracker(frg_context);
         JSONURL(WorkspaceDriver.st_json);
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            int lastFirstVisibleElement = 0;
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (lastFirstVisibleElement == 0) {
+                    onResume();
+                    JSONURL(WorkspaceDriver.st_json);
+                    Log.d("LOGIII", "lastVis_2: " + lastFirstVisibleElement);
+                }
+            }
+
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                lastFirstVisibleElement = firstVisibleItem;
+            }
+        });
+
         return view;
     }
 
@@ -241,111 +260,10 @@ public class FragmentOrdersDriver extends AbstractTabFragment{
         }
     }
 
-    /*@Override
+    @Override
     public void onResume() {
-        currentDate = new Date();
-        time_mil = df.format(currentDate);
-        GPSsetting();
-        KorToAdr(LAT, LNG);
-        new RequestTask().execute(getString(R.string.adress));
+        Log.d("LOGI", "OrdersDriver resume");
+        JSONURL(WorkspaceDriver.st_json);
         super.onResume();
-    }*/
-
-    class RequestTask extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-
-
-            try {
-                //создаем запрос на сервер
-                DefaultHttpClient hc = new DefaultHttpClient();
-                ResponseHandler<String> res = new BasicResponseHandler();
-                //он у нас будет посылать post запрос
-                HttpPost postMethod = new HttpPost(params[0]);
-                //будем передавать два параметра
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
-                //передаем параметры из наших текстбоксов
-                //логин
-                nameValuePairs.add(new BasicNameValuePair("login", log));
-                //пароль
-                nameValuePairs.add(new BasicNameValuePair("pass", pas));
-
-                nameValuePairs.add(new BasicNameValuePair("loc_x", dol));
-
-                nameValuePairs.add(new BasicNameValuePair("loc_y", shi));
-
-                nameValuePairs.add(new BasicNameValuePair("time", time_mil));
-
-                nameValuePairs.add(new BasicNameValuePair("address", add));
-                Log.d("LOGI", nameValuePairs.toString());
-                //собераем их вместе и посылаем на сервер
-                postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-                //получаем ответ от сервера
-                //String
-                response = hc.execute(postMethod, res);
-                Log.d("LOGI", response.toString());
-                JSONURL(response.toString());
-
-
-
-
-            } catch (Exception e) {
-                System.out.println("Exp=" + e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            dialog.dismiss();
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            dialog = new ProgressDialog(frg_context);
-            dialog.setMessage("Загружаюсь...");
-            dialog.setIndeterminate(true);
-            dialog.setCancelable(true);
-            dialog.show();
-            super.onPreExecute();
-        }
-    }
-
-    public void KorToAdr(double lt, double lg){
-
-        Geocoder geoCoder = new Geocoder(
-                frg_context, Locale.getDefault());
-        try {
-            List<Address> addresses = geoCoder.getFromLocation(
-                    lt,
-                    lg, 1);
-
-            if (addresses.size() > 0) {
-                for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex();
-                     i++)
-                    add += addresses.get(0).getAddressLine(i) + "\n";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void GPSsetting(){
-
-        if(gps.canGetLocation()) {
-            dol = "" + gps.getLongitude();
-            shi = "" + gps.getLatitude();
-            LAT = gps.getLatitude();
-            LNG = gps.getLongitude();
-        }else{
-            // can't get location
-            // GPS or Network is not enabled
-            // Ask user to enable GPS/network in settings
-            gps.showSettingsAlert();
-        }
     }
 }

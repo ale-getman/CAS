@@ -116,6 +116,12 @@ public class FragmentPhoto extends AbstractTabFragment{
         pas = TabOrder.pas;
         image_url = TabOrder.image_url;
 
+        if(FragmentOrder.text_status.equals("закрыт"))
+        {
+            photobtn.setEnabled(true);
+            getimg.setEnabled(true);
+        }
+
         if(!(image_url.equals("")))
         {
             photoTask = new PhotoTask();

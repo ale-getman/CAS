@@ -78,6 +78,7 @@ public class WorkspaceManager extends AppCompatActivity {
     private ProgressDialog dialog;
     public Date currentDate;
     public static double LAT,LNG;
+    public String network_status;
 
 
     @Override
@@ -94,7 +95,7 @@ public class WorkspaceManager extends AppCompatActivity {
         st_log = log;
         st_pas = pas;
         startService(new Intent(this, MyService.class).putExtra("login", log));
-
+        network_status = "online";
         //принимаем параметр который мы послылали в manActivity
         Bundle extras = getIntent().getExtras();
         //превращаем в тип стринг для парсинга
@@ -122,11 +123,42 @@ public class WorkspaceManager extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+
+                    case R.id.close_app:
+                        stopService(new Intent(WorkspaceManager.this, MyService.class));
+                        currentDate = new Date();
+                        time_mil = df.format(currentDate);
+                        GPSsetting();
+                        KorToAdr(LAT, LNG);
+                        network_status = "offline";
+                        new RequestTask_destroy().execute(getString(R.string.adress));
+                        Intent a = new Intent(WorkspaceManager.this,MainActivity.class);
+                        a.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        toolbar.inflateMenu(R.menu.menu);
     }
 
     @Override
     protected void onDestroy() {
         stopService(new Intent(this, MyService.class));
+        currentDate = new Date();
+        time_mil = df.format(currentDate);
+        GPSsetting();
+        KorToAdr(LAT, LNG);
+        network_status = "offline";
+        new RequestTask_destroy().execute(getString(R.string.adress));
         Log.d("LOGI", "destroy destroy");
         super.onDestroy();
     }
@@ -280,7 +312,7 @@ public class WorkspaceManager extends AppCompatActivity {
                 //он у нас будет посылать post запрос
                 HttpPost postMethod = new HttpPost(params[0]);
                 //будем передавать два параметра
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
                 //передаем параметры из наших текстбоксов
                 //логин
                 nameValuePairs.add(new BasicNameValuePair("login", log));
@@ -294,6 +326,8 @@ public class WorkspaceManager extends AppCompatActivity {
                 nameValuePairs.add(new BasicNameValuePair("time", time_mil));
 
                 nameValuePairs.add(new BasicNameValuePair("address", add));
+
+                nameValuePairs.add(new BasicNameValuePair("network_status", network_status));
                 //Log.d("LOGI", nameValuePairs.toString());
                 //собераем их вместе и посылаем на сервер
                 postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
@@ -332,6 +366,7 @@ public class WorkspaceManager extends AppCompatActivity {
 
         Geocoder geoCoder = new Geocoder(
                 getBaseContext(), Locale.getDefault());
+        add = "";
         try {
             List<Address> addresses = geoCoder.getFromLocation(
                     lt,
@@ -344,6 +379,59 @@ public class WorkspaceManager extends AppCompatActivity {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    class RequestTask_destroy extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            try {
+                //создаем запрос на сервер
+                DefaultHttpClient hc = new DefaultHttpClient();
+                ResponseHandler<String> res = new BasicResponseHandler();
+                //он у нас будет посылать post запрос
+                HttpPost postMethod = new HttpPost(params[0]);
+                //будем передавать два параметра
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
+                //передаем параметры из наших текстбоксов
+                //логин
+                nameValuePairs.add(new BasicNameValuePair("login", log));
+                //пароль
+                nameValuePairs.add(new BasicNameValuePair("pass", pas));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_x", dolstr));
+
+                nameValuePairs.add(new BasicNameValuePair("loc_y", shistr));
+
+                nameValuePairs.add(new BasicNameValuePair("time", time_mil));
+
+                nameValuePairs.add(new BasicNameValuePair("address", add));
+
+                nameValuePairs.add(new BasicNameValuePair("network_status", network_status));
+                //Log.d("LOGI", nameValuePairs.toString());
+                //собераем их вместе и посылаем на сервер
+                postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+                //получаем ответ от сервера
+                //String
+                response = hc.execute(postMethod, res);
+
+            } catch (Exception e) {
+                System.out.println("Exp=" + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
     }
 }

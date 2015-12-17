@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +100,17 @@ public class FragmentOrdersManager extends AbstractTabFragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(LAYOUT, container, false);
+        //view = inflater.inflate(LAYOUT, container, false);
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(LAYOUT, container, false);
+        } catch (InflateException e) {
+    /* map is already there, just return view as it is */
+        }
         Log.d("LOGII", "1111111");
         listView = (ListView) view.findViewById(R.id.list);
         local = new Locale("ru","RU");
@@ -118,11 +129,18 @@ public class FragmentOrdersManager extends AbstractTabFragment{
         gps = new GPSTracker(frg_context);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             int state = 0;
-            int lastFirstVisibleElement = -1;
+            int lastFirstVisibleElement = 0;
 
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 //Log.d("LOGI", "scrollState = " + scrollState);
                 state = -1;
+                //Log.d("LOGIII", "lastVis_1: " + lastFirstVisibleElement);
+                if(lastFirstVisibleElement == 0)
+                {
+                    onResume();
+                    JSONURL(WorkspaceManager.st_json);
+                    Log.d("LOGIII", "lastVis_2: " + lastFirstVisibleElement);
+                }
             }
 
             public void onScroll(AbsListView view, int firstVisibleItem,
@@ -132,12 +150,13 @@ public class FragmentOrdersManager extends AbstractTabFragment{
                         + ", totalItemCount" + totalItemCount);*/
                 //lastFirstVisibleElement = firstVisibleItem;
                 if (lastFirstVisibleElement > firstVisibleItem){
-                    Log.d("LOGI", "Scroll up");
+                    //Log.d("LOGII", "Scroll up");
                 }
                 else if (lastFirstVisibleElement < firstVisibleItem){
-                    Log.d("LOGI", "Scroll down");
+                    //Log.d("LOGII", "Scroll down");
                 }
                 lastFirstVisibleElement = firstVisibleItem;
+                //Log.d("LOGII", "lastvisi_3: " + lastFirstVisibleElement);
             }
         });
         return view;
@@ -278,108 +297,10 @@ public class FragmentOrdersManager extends AbstractTabFragment{
         }
     }
 
-    /*@Override
+    @Override
     public void onResume() {
-        currentDate = new Date();
-        time_mil = df.format(currentDate);
-        GPSsetting();
-        KorToAdr(LAT, LNG);
-        new RequestTask().execute(getString(R.string.adress));
+        Log.d("LOGI", "OrdersManager resume");
+        JSONURL(WorkspaceManager.st_json);
         super.onResume();
-    }*/
-
-    class RequestTask extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-
-
-            try {
-                //создаем запрос на сервер
-                DefaultHttpClient hc = new DefaultHttpClient();
-                ResponseHandler<String> res = new BasicResponseHandler();
-                //он у нас будет посылать post запрос
-                HttpPost postMethod = new HttpPost(params[0]);
-                //будем передавать два параметра
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
-                //передаем параметры из наших текстбоксов
-                //логин
-                nameValuePairs.add(new BasicNameValuePair("login", log));
-                //пароль
-                nameValuePairs.add(new BasicNameValuePair("pass", pas));
-
-                nameValuePairs.add(new BasicNameValuePair("loc_x", dol));
-
-                nameValuePairs.add(new BasicNameValuePair("loc_y", shi));
-
-                nameValuePairs.add(new BasicNameValuePair("time", time_mil));
-
-                nameValuePairs.add(new BasicNameValuePair("address", add));
-                Log.d("LOGI", nameValuePairs.toString());
-                //собераем их вместе и посылаем на сервер
-                postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-                //получаем ответ от сервера
-                //String
-                response = hc.execute(postMethod, res);
-                Log.d("LOGI", response.toString());
-                JSONURL(response.toString());
-
-            } catch (Exception e) {
-                System.out.println("Exp=" + e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            dialog.dismiss();
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            dialog = new ProgressDialog(frg_context);
-            dialog.setMessage("Загружаюсь...");
-            dialog.setIndeterminate(true);
-            dialog.setCancelable(true);
-            dialog.show();
-            super.onPreExecute();
-        }
-    }
-
-    public void KorToAdr(double lt, double lg){
-
-        Geocoder geoCoder = new Geocoder(
-                frg_context, Locale.getDefault());
-        try {
-            List<Address> addresses = geoCoder.getFromLocation(
-                    lt,
-                    lg, 1);
-
-            if (addresses.size() > 0) {
-                for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex();
-                     i++)
-                    add += addresses.get(0).getAddressLine(i) + "\n";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void GPSsetting(){
-
-        if(gps.canGetLocation()) {
-            dol = "" + gps.getLongitude();
-            shi = "" + gps.getLatitude();
-            LAT = gps.getLatitude();
-            LNG = gps.getLongitude();
-        }else{
-            // can't get location
-            // GPS or Network is not enabled
-            // Ask user to enable GPS/network in settings
-            gps.showSettingsAlert();
-        }
     }
 }

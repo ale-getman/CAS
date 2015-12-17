@@ -65,13 +65,16 @@ public class FragmentOrder extends AbstractTabFragment{
         fragment.setContext(context);
         fragment.setTitle(context.getString(R.string.tab_order));
         frg_context = context;
+
         return fragment;
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+
         text_order = (TextView) view.findViewById(R.id.text_order1);
         text_technic = (TextView) view.findViewById(R.id.text_technic1);
         text_accept = (TextView) view.findViewById(R.id.text_accept1);
@@ -79,7 +82,6 @@ public class FragmentOrder extends AbstractTabFragment{
         accept = (Button) view.findViewById(R.id.accept1);
         ready = (Button) view.findViewById(R.id.ready1);
         img_status = (ImageView) view.findViewById(R.id.img_status);
-        ready.setEnabled(false);
 
         loc_x  = TabOrder.loc_x;
         loc_y  = TabOrder.loc_y;
@@ -96,22 +98,34 @@ public class FragmentOrder extends AbstractTabFragment{
         text_address.setText(TabOrder.address);
 
         if(text_status.equals("открыт"))
+        {
             img_status.setImageResource(R.drawable.open_order);
+            accept.setEnabled(true);
+            ready.setEnabled(false);
+        }
         if(text_status.equals("выполняется"))
+        {
             img_status.setImageResource(R.drawable.inwork_order);
+            accept.setEnabled(false);
+            ready.setEnabled(true);
+        }
         if(text_status.equals("закрыт"))
+        {
             img_status.setImageResource(R.drawable.close_order);
+            accept.setEnabled(false);
+            ready.setEnabled(false);
+        }
 
         sostoyanie = "з" + who.substring(1);
         text_accept.setText(sostoyanie);
         technica = TabOrder.text_technic.substring(TabOrder.text_technic.indexOf(":")+2);
         text_technic.setText(technica);
 
-        if(!who.contains(log))
+        /*if(!who.contains(log))
         {
             accept.setEnabled(false);
             ready.setEnabled(false);
-        }
+        }*/
 
         if(type.equals("менеджер"))
         {
@@ -127,7 +141,10 @@ public class FragmentOrder extends AbstractTabFragment{
                 ready.setEnabled(true);
                 status = "выполняется";
                 text_status = "выполняется";
+                TabOrder.text_status = "выполняется";
                 text_accept.setText("заказ выполняет: " + log);
+                TabOrder.who = "заказ выполняет: " + log;
+                img_status.setImageResource(R.drawable.inwork_order);
                 new RequestTask().execute(getString(R.string.adress_2));
             }
         });
@@ -140,7 +157,12 @@ public class FragmentOrder extends AbstractTabFragment{
                 ready.setEnabled(false);
                 status = "закрыт";
                 text_status = "закрыт";
+                TabOrder.text_status = "закрыт";
                 text_accept.setText("заказ выполнил: " + log);
+                TabOrder.who = "заказ выполнил: " + log;
+                FragmentPhoto.photobtn.setEnabled(true);
+                FragmentPhoto.getimg.setEnabled(true);
+                img_status.setImageResource(R.drawable.close_order);
                 new RequestTask().execute(getString(R.string.adress_2));
             }
         });
