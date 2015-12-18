@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -192,6 +193,16 @@ public class FragmentDriversManager extends AbstractTabFragment {
                         intent.putExtra("number", myBooks.get(position).get(number).toString());
                         intent.putExtra("date", myBooks.get(position).get(date).toString());
                         startActivity(intent);
+                    }
+                });
+                list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> av, View v, int pos, long id)
+                    {
+                        Intent callintent = new Intent(Intent.ACTION_DIAL);
+                        callintent.setData(Uri.parse("tel:" + myBooks.get(pos).get(number).toString()));
+                        startActivity(callintent);
+                        return true;
                     }
                 });
             }
