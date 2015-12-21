@@ -106,7 +106,7 @@ public class FragmentOrdersDriver extends AbstractTabFragment{
         gps = new GPSTracker(frg_context);
         JSONURL(WorkspaceDriver.st_json);
 
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        /*listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             int lastFirstVisibleElement = 0;
 
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -121,7 +121,7 @@ public class FragmentOrdersDriver extends AbstractTabFragment{
                                  int visibleItemCount, int totalItemCount) {
                 lastFirstVisibleElement = firstVisibleItem;
             }
-        });
+        });*/
 
         return view;
     }
@@ -263,6 +263,7 @@ public class FragmentOrdersDriver extends AbstractTabFragment{
     @Override
     public void onResume() {
         Log.d("LOGI", "OrdersDriver resume");
+        Log.d("LOGI", "OrdersDriver resume: " + WorkspaceDriver.st_json);
         JSONURL(WorkspaceDriver.st_json);
         super.onResume();
     }

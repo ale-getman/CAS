@@ -10,9 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,36 @@ public class ZakazActivity extends Activity {
     public SimpleDateFormat format1;
     private Toolbar toolbar;
     public TextView t1;
+    public Spinner spinner;
+    public String tech_spin;
+    public String[] spisok_tech = {"Автобетононасос",
+            "Автовышка",
+            "Автогрейдер",
+            "Автокран",
+            "Ассенизаторская машина",
+            "Асфальтоукладчик",
+            "Бульдозер",
+            "Генератор",
+            "Гидромолот",
+            "Грунторез",
+            "Длинномер",
+            "Дорожная фреза",
+            "Илосос",
+            "Каток",
+            "Коммунальная машина",
+            "Компрессор",
+            "Манипулятор",
+            "Мини-погрузчик",
+            "Мини-экскаватор",
+            "Низкорамная платформа",
+            "Поливомоечная машина ",
+            "Самосвал",
+            "Фронтальный погрузчик",
+            "Экскаватор гусеничный",
+            "Экскаватор колёсный",
+            "Экскаватор погрузчик",
+            "Ямобур"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,16 +90,43 @@ public class ZakazActivity extends Activity {
         zakaz_send = (Button) findViewById(R.id.zakaz_send);
         zakaz_maps = (Button) findViewById(R.id.zakaz_maps);
 
+        zakaz_technic.setVisibility(View.GONE);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spisok_tech);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner = (Spinner) findViewById(R.id.spinner);
+
+        spinner.setAdapter(adapter);
+        // заголовок
+        spinner.setPrompt("Список техники");
+        // выделяем элемент
+        spinner.setSelection(0);
+        // устанавливаем обработчик нажатия
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                // показываем позиция нажатого элемента
+                tech_spin = spinner.getItemAtPosition(position).toString();
+                //Toast.makeText(getBaseContext(), "Position = " + position, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
         zakaz_send.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(zakaz_name.getText().toString().equals("") || zakaz_technic.getText().toString().equals("") || zakaz_address.getText().toString().equals(""))
+                //if(zakaz_name.getText().toString().equals("") || zakaz_technic.getText().toString().equals("") || zakaz_address.getText().toString().equals(""))
+                if(zakaz_name.getText().toString().equals("") || zakaz_address.getText().toString().equals(""))
                     Toast.makeText(ZakazActivity.this, "Заполните все поля.", Toast.LENGTH_SHORT).show();
                 else
                 {
                     nameZ = new String(zakaz_name.getText().toString());
                     technicZ = new String(zakaz_technic.getText().toString());
+                    technicZ = new String(tech_spin);
                     addressZ = new String(zakaz_address.getText().toString());
                     dataZ = new String(format1.format(d));
                     Log.d("LOGI", "data: " + dataZ);

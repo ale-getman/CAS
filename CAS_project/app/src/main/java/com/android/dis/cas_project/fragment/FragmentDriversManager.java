@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -40,6 +41,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +55,7 @@ import java.util.Map;
 public class FragmentDriversManager extends AbstractTabFragment {
 
     private static final int LAYOUT = R.layout.list_driver;
-    private ProgressDialog dialog;
+    //private ProgressDialog dialog;
     public String response;
     public ListView list;
     public MySimpleAdapter adapter;
@@ -63,6 +66,8 @@ public class FragmentDriversManager extends AbstractTabFragment {
     public static final String number = "number";
     public static final String date = "date";
     public static final String adr = "address";
+    public static final String tech_status = "tech_status";
+    public static final String status = "status";
     public static ArrayList<HashMap<String, Object>> myBooks;
     public static Context frg_context;
     public String time_mil;
@@ -134,7 +139,7 @@ public class FragmentDriversManager extends AbstractTabFragment {
         @Override
         protected void onPostExecute(String result) {
 
-            dialog.dismiss();
+            //dialog.dismiss();
             JSONURL(response.toString());
             super.onPostExecute(result);
         }
@@ -142,11 +147,11 @@ public class FragmentDriversManager extends AbstractTabFragment {
         @Override
         protected void onPreExecute() {
 
-            dialog = new ProgressDialog(frg_context);
+            /*dialog = new ProgressDialog(frg_context);
             dialog.setMessage("Загружаюсь...");
             dialog.setIndeterminate(true);
             dialog.setCancelable(true);
-            dialog.show();
+            dialog.show();*/
             super.onPreExecute();
         }
     }
@@ -162,22 +167,45 @@ public class FragmentDriversManager extends AbstractTabFragment {
             final JSONArray urls = json.getJSONArray("data");
             //проходим циклом по всем нашим параметрам
             for (int i = 0; i < urls.length(); i++) {
-                HashMap<String, Object> hm;
+                HashMap<String, Object> hm,hm_off;
                 hm = new HashMap<String, Object>();
-
-                hm.put(x,urls.getJSONObject(i).getString("loc_x").toString());
-                hm.put(y,urls.getJSONObject(i).getString("loc_y").toString());
-                hm.put(name, urls.getJSONObject(i).getString("info").toString());
-                hm.put(tech, urls.getJSONObject(i).getString("tech").toString());
-                hm.put(number, urls.getJSONObject(i).getString("number").toString());
-                hm.put(date, urls.getJSONObject(i).getString("date").toString());
-                hm.put(adr, urls.getJSONObject(i).getString("address").toString());
+                hm_off = new HashMap<String, Object>();
 
                 if(urls.getJSONObject(i).getString("status").toString().equals("online"))
+                {
+                    hm.put(x, urls.getJSONObject(i).getString("loc_x").toString());
+                    hm.put(y, urls.getJSONObject(i).getString("loc_y").toString());
+                    hm.put(name, urls.getJSONObject(i).getString("info").toString());
+                    hm.put(tech, urls.getJSONObject(i).getString("tech").toString());
+                    hm.put(number, urls.getJSONObject(i).getString("number").toString());
+                    hm.put(date, urls.getJSONObject(i).getString("date").toString());
+                    hm.put(adr, urls.getJSONObject(i).getString("address").toString());
+                    hm.put(tech_status, urls.getJSONObject(i).getString("tech").toString() + urls.getJSONObject(i).getString("status").toString());
+                    hm.put(status, urls.getJSONObject(i).getString("status").toString());
                     myBooks.add(hm);
+                }
+                else
+                {
+                    hm_off.put(x, urls.getJSONObject(i).getString("loc_x").toString());
+                    hm_off.put(y, urls.getJSONObject(i).getString("loc_y").toString());
+                    hm_off.put(name, urls.getJSONObject(i).getString("info").toString());
+                    hm_off.put(tech, urls.getJSONObject(i).getString("tech").toString());
+                    hm_off.put(number, urls.getJSONObject(i).getString("number").toString());
+                    hm_off.put(date, urls.getJSONObject(i).getString("date").toString());
+                    hm_off.put(adr, urls.getJSONObject(i).getString("address").toString());
+                    hm_off.put(tech_status, urls.getJSONObject(i).getString("tech").toString() + urls.getJSONObject(i).getString("status").toString());
+                    hm_off.put(status, urls.getJSONObject(i).getString("status").toString());
+                    myBooks.add(hm_off);
+                }
+
+                Collections.sort(myBooks, new MapComparator());
+
+                    Log.d("LOGIB", "myBooks: " + myBooks);
+                    Log.d("LOGIB", "hm: " + hm);
+                    Log.d("LOGIB", "hm_off: " + hm_off);
 
                     adapter = new MySimpleAdapter(frg_context, myBooks, R.layout.list_driver_adapter,
-                        new String[] { name, tech, number, date, adr, tech}, new int[] { R.id.text1, R.id.text2, R.id.text3 , R.id.text4 , R.id.text5, R.id.image_status});
+                        new String[] { name, tech, number, date, adr, tech_status}, new int[] { R.id.text1, R.id.text2, R.id.text3 , R.id.text4 , R.id.text5, R.id.image_status});
                 list.setAdapter(adapter);
                 list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 ColorDrawable divcolor = new ColorDrawable(Color.parseColor("#FFD6D6D6"));
@@ -211,6 +239,15 @@ public class FragmentDriversManager extends AbstractTabFragment {
         }
     }
 
+    class MapComparator implements Comparator<HashMap<String, Object>>
+    {
+        @Override
+        public int compare(HashMap<String, Object> lhs, HashMap<String, Object> rhs) {
+
+            return rhs.get(status).toString().compareTo(lhs.get(status).toString());
+        }
+    }
+
     class MySimpleAdapter extends SimpleAdapter {
         public MySimpleAdapter(Context context,
                                List<? extends Map<String, ?>> data, int resource,
@@ -223,10 +260,26 @@ public class FragmentDriversManager extends AbstractTabFragment {
 
             if (v.getId() == R.id.image_status) {
 
-                if(value.equals(""))
+                /*if(value.equals(""))
                     v.setImageResource(R.drawable.ic_manager);
                 else
-                    v.setImageResource(R.drawable.ic_driver);
+                    v.setImageResource(R.drawable.ic_driver);*/
+                Log.d("LOGIL", "image length: " + value.length());
+                Log.d("LOGIL", "image length: " + value);
+                if(value.length() > 7)
+                {
+                    if(value.contains("online"))
+                        v.setImageResource(R.drawable.ic_driver);
+                    if(value.contains("offline"))
+                        v.setImageResource(R.drawable.ic_driver_offline);
+                }
+                else
+                {
+                    if(value.contains("online"))
+                        v.setImageResource(R.drawable.ic_manager);
+                    if(value.contains("offline"))
+                        v.setImageResource(R.drawable.ic_manager_offline);
+                }
 
             }
         }
@@ -257,15 +310,11 @@ public class FragmentDriversManager extends AbstractTabFragment {
         }
     }
 
-    /*@Override
+    @Override
     public void onResume() {
-        currentDate = new Date();
-        time_mil = df.format(currentDate);
-        GPSsetting();
-        KorToAdr(LAT, LNG);
         new RequestTask().execute(getString(R.string.adress_7));
         super.onResume();
-    }*/
+    }
 
     public void KorToAdr(double lt, double lg){
 

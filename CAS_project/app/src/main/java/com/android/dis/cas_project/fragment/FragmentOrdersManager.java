@@ -127,7 +127,7 @@ public class FragmentOrdersManager extends AbstractTabFragment{
         log = WorkspaceManager.st_log;
         pas = WorkspaceManager.st_pas;
         gps = new GPSTracker(frg_context);
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        /*listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             int state = 0;
             int lastFirstVisibleElement = 0;
 
@@ -145,9 +145,9 @@ public class FragmentOrdersManager extends AbstractTabFragment{
 
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
-                /*Log.d("LOGI", "scroll: firstVisibleItem = " + firstVisibleItem
+                *//*Log.d("LOGI", "scroll: firstVisibleItem = " + firstVisibleItem
                         + ", visibleItemCount" + visibleItemCount
-                        + ", totalItemCount" + totalItemCount);*/
+                        + ", totalItemCount" + totalItemCount);*//*
                 //lastFirstVisibleElement = firstVisibleItem;
                 if (lastFirstVisibleElement > firstVisibleItem){
                     //Log.d("LOGII", "Scroll up");
@@ -158,7 +158,7 @@ public class FragmentOrdersManager extends AbstractTabFragment{
                 lastFirstVisibleElement = firstVisibleItem;
                 //Log.d("LOGII", "lastvisi_3: " + lastFirstVisibleElement);
             }
-        });
+        });*/
         return view;
     }
 
