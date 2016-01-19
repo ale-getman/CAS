@@ -63,7 +63,7 @@ public class WorkspaceDriver extends AppCompatActivity {
     public String dolstr, shistr;
     public static String st_dolstr,st_shistr;
     public GPSTracker gps;
-    public String log, pas;
+    public static String log, pas, type, technic;
     public static String st_log, st_pas;
     public ProgressDialog dialog2;
     public String version, flag;
@@ -87,17 +87,21 @@ public class WorkspaceDriver extends AppCompatActivity {
         local = new Locale("ru", "RU");
         df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", local);
 
-        log = new String(getIntent().getStringExtra("login"));
+        /*log = new String(getIntent().getStringExtra("login"));
         pas = new String(getIntent().getStringExtra("password"));
+        type = new String(getIntent().getStringExtra("type"));
+        technic = new String(getIntent().getStringExtra("technic"));*/
+
         st_log = log;
         st_pas = pas;
-        startService(new Intent(this, MyService.class).putExtra("login", log));
+        startService(new Intent(this, MyService.class).putExtra("login", log).putExtra("pas", pas).putExtra("type", type).putExtra("technic", technic));
         network_status = "online";
         //принимаем параметр который мы послылали в manActivity
         Bundle extras = getIntent().getExtras();
         //превращаем в тип стринг для парсинга
-        String json = extras.getString(JsonURL);
-        st_json = json;
+
+        /*String json = extras.getString(JsonURL);
+        st_json = json;*/
 
         gps = new GPSTracker(this);
         GPSsetting();

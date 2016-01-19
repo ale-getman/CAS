@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
     final String SAVED_PAS = "PAS";
     final String SAVED_STS = "STATUS";
     public String FLAG = "middle";
-    public String response, TYPE;
+    public String response, TYPE, TECHNIC;
     public Locale local;
     public SimpleDateFormat df;
     public Date currentDate;
@@ -212,10 +212,18 @@ public class MainActivity extends Activity {
                     //посылаем на вторую активность полученные параметры
                     Intent intent = new Intent(MainActivity.this, WorkspaceDriver.class);
                     //то что куда мы будем передавать и что, putExtra(куда, что);
-                    intent.putExtra(WorkspaceDriver.JsonURL, response.toString());
+                    //intent.putExtra(WorkspaceDriver.JsonURL, response.toString());
 
-                    intent.putExtra("login", log);
+                    /*intent.putExtra("login", log);
                     intent.putExtra("password", pas);
+                    intent.putExtra("type", TYPE);
+                    intent.putExtra("technic", TECHNIC);*/
+
+                    WorkspaceDriver.log = log;
+                    WorkspaceDriver.pas = pas;
+                    WorkspaceDriver.type = TYPE;
+                    WorkspaceDriver.technic = TECHNIC;
+                    WorkspaceDriver.st_json = response.toString();
 
                     startActivity(intent);
                 }
@@ -224,10 +232,18 @@ public class MainActivity extends Activity {
                     //посылаем на вторую активность полученные параметры
                     Intent intent = new Intent(MainActivity.this, WorkspaceManager.class);
                     //то что куда мы будем передавать и что, putExtra(куда, что);
-                    intent.putExtra(WorkspaceManager.JsonURL, response.toString());
+                    //intent.putExtra(WorkspaceManager.JsonURL, response.toString());
 
-                    intent.putExtra("login", log);
+                    /*intent.putExtra("login", log);
                     intent.putExtra("password", pas);
+                    intent.putExtra("type", TYPE);
+                    intent.putExtra("technic", TECHNIC);*/
+
+                    WorkspaceManager.log = log;
+                    WorkspaceManager.pas = pas;
+                    WorkspaceManager.type = TYPE;
+                    WorkspaceManager.technic = TECHNIC;
+                    WorkspaceManager.st_json = response.toString();
 
                     startActivity(intent);
                 }
@@ -297,6 +313,7 @@ public class MainActivity extends Activity {
             //проходим циклом по всем нашим параметрам
             FLAG = urls.getJSONObject(0).getString("flag").toString();
             TYPE = urls.getJSONObject(0).getString("type").toString();
+            TECHNIC  = urls.getJSONObject(0).getString("tech").toString();
             Log.d("LOGI", "FLAG: " + FLAG);
             Log.d("LOGI", "TYPE: " + TYPE);
         } catch (JSONException e) {

@@ -47,6 +47,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -234,6 +236,8 @@ public class FragmentOrdersManager extends AbstractTabFragment{
                             new String[]{NAME, TECHNIC, WHO, STATUS}, new int[]{R.id.text1, R.id.text2, R.id.text3, R.id.image_status});
                 }
 
+                Collections.sort(myBooks, new MapComparator());
+
                 //выводим в листвбю
                 listView.setAdapter(adapter);
                 listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -266,6 +270,15 @@ public class FragmentOrdersManager extends AbstractTabFragment{
             Log.e("log_tag", "Error parsing data " + e.toString());
         }
 
+    }
+
+    class MapComparator implements Comparator<HashMap<String, Object>>
+    {
+        @Override
+        public int compare(HashMap<String, Object> lhs, HashMap<String, Object> rhs) {
+
+            return rhs.get(ID).toString().compareTo(lhs.get(ID).toString());
+        }
     }
 
     class MySimpleAdapter extends SimpleAdapter {
