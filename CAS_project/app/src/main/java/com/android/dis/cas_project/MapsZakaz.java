@@ -89,7 +89,12 @@ public class MapsZakaz extends FragmentActivity implements OnMapReadyCallback {
                     }
 
                     Toast.makeText(getBaseContext(), add, Toast.LENGTH_SHORT).show();
-                    ZakazActivity.zakaz_address.setText(add);
+                    String flag = new String(getIntent().getStringExtra("flag"));
+                    if(flag.equals("0"))
+                        ZakazActivity.zakaz_address.setText(add);
+                    else
+                        ZakazActivity.zakaz_address_2.setText(add);
+
                     LatLng myPosition2 = new LatLng(LAT, LNG);
                     mMap.addMarker(new MarkerOptions()
                             .position(myPosition2)

@@ -1,13 +1,19 @@
 package com.android.dis.cas_project;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +45,13 @@ public class ZakazActivity extends Activity {
 
     public EditText zakaz_name, zakaz_technic;
     public static EditText zakaz_address;
+    public static EditText zakaz_address_2;
     public Button zakaz_send, zakaz_maps;
+    public ImageButton maps_zakaz,add_adr;
+    public LinearLayout linear_address;
+    public int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
+    public int fillParent = LinearLayout.LayoutParams.FILL_PARENT;
+    public int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
     public String nameZ, technicZ, addressZ,dataZ;
     public String response;
     private ProgressDialog dialog;
@@ -81,6 +95,8 @@ public class ZakazActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.zakaz_layout);
 
+        linear_address = (LinearLayout) findViewById(R.id.linear_address);
+
         d = new Date();
         format1 = new SimpleDateFormat("ddMMyy");
 
@@ -88,7 +104,9 @@ public class ZakazActivity extends Activity {
         zakaz_technic = (EditText) findViewById(R.id.zakaz_tech);
         zakaz_address = (EditText) findViewById(R.id.zakaz_address);
         zakaz_send = (Button) findViewById(R.id.zakaz_send);
-        zakaz_maps = (Button) findViewById(R.id.zakaz_maps);
+        //zakaz_maps = (Button) findViewById(R.id.zakaz_maps);
+        maps_zakaz = (ImageButton) findViewById(R.id.maps_zakaz);
+        add_adr = (ImageButton) findViewById(R.id.add_adr);
 
         zakaz_technic.setVisibility(View.GONE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spisok_tech);
@@ -110,6 +128,7 @@ public class ZakazActivity extends Activity {
                 tech_spin = spinner.getItemAtPosition(position).toString();
                 //Toast.makeText(getBaseContext(), "Position = " + position, Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
             }
@@ -120,10 +139,9 @@ public class ZakazActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //if(zakaz_name.getText().toString().equals("") || zakaz_technic.getText().toString().equals("") || zakaz_address.getText().toString().equals(""))
-                if(zakaz_name.getText().toString().equals("") || zakaz_address.getText().toString().equals(""))
+                if (zakaz_name.getText().toString().equals("") || zakaz_address.getText().toString().equals(""))
                     Toast.makeText(ZakazActivity.this, "Заполните все поля.", Toast.LENGTH_SHORT).show();
-                else
-                {
+                else {
                     nameZ = new String(zakaz_name.getText().toString());
                     technicZ = new String(zakaz_technic.getText().toString());
                     technicZ = new String(tech_spin);
@@ -136,14 +154,71 @@ public class ZakazActivity extends Activity {
             }
         });
 
-        zakaz_maps.setOnClickListener(new OnClickListener() {
+        /*zakaz_maps.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ZakazActivity.this, MapsZakaz.class);
                 startActivity(intent);
             }
+        });*/
+
+        maps_zakaz.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ZakazActivity.this, MapsZakaz.class);
+                intent.putExtra("flag", "0");
+                startActivity(intent);
+            }
         });
+
+        add_adr.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(
+                        fillParent, wrapContent);
+                LinearLayout.LayoutParams lParams_2 = new LinearLayout.LayoutParams(
+                        fillParent, wrapContent, 1f);
+                LinearLayout.LayoutParams lParams_3 = new LinearLayout.LayoutParams(
+                        60, 60);
+
+                LinearLayout lin_adr_2 = new LinearLayout(ZakazActivity.this);
+                lin_adr_2.setOrientation(LinearLayout.HORIZONTAL);
+                lin_adr_2.setWeightSum(1);
+                linear_address.addView(lin_adr_2, lParams);
+
+                zakaz_address_2 = new EditText(ZakazActivity.this);
+                zakaz_address_2.setBackgroundResource(R.drawable.edit_text_style);
+                lParams_2.gravity = Gravity.LEFT;
+                lParams_2.setMargins(15, 0, 0, 0);
+                zakaz_address_2.setInputType(InputType.TYPE_CLASS_TEXT);
+                zakaz_address_2.setPadding(10, 15, 0, 15);
+                zakaz_address_2.setHint("Введите адрес");
+                lin_adr_2.addView(zakaz_address_2, lParams_2);
+
+                ImageButton maps_zakaz_2 = new ImageButton((ZakazActivity.this));
+                maps_zakaz_2.setImageResource(Resources.getSystem().getIdentifier("ic_dialog_map", "drawable", "android"));
+                maps_zakaz_2.setBackgroundResource(R.drawable.edit_text_style);
+                lParams_3.gravity = Gravity.CENTER;
+                lParams_3.setMargins(0, 0, 15, 0);
+                lin_adr_2.addView(maps_zakaz_2, lParams_3);
+
+                maps_zakaz_2.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ZakazActivity.this, MapsZakaz.class);
+                        intent.putExtra("flag", "1");
+                        startActivity(intent);
+                    }
+                });
+
+                add_adr.setVisibility(View.INVISIBLE);
+            }
+        });
+
         initToolbar();
     }
 

@@ -40,7 +40,7 @@ public class FragmentOrder extends AbstractTabFragment{
     public static TextView text_accept;
     public static TextView text_address;
     public static String log, id, who, pas, status;
-    public static Button accept,ready;
+    public static Button accept,ready,cancel;
     public static ProgressDialog dialog;
     public static double dol,shi;
     public static String loc_x,loc_y;
@@ -81,6 +81,7 @@ public class FragmentOrder extends AbstractTabFragment{
         text_address = (TextView) view.findViewById(R.id.text_address1);
         accept = (Button) view.findViewById(R.id.accept1);
         ready = (Button) view.findViewById(R.id.ready1);
+        cancel = (Button) view.findViewById(R.id.cancel1);
         img_status = (ImageView) view.findViewById(R.id.img_status);
 
         loc_x  = TabOrder.loc_x;
@@ -102,18 +103,21 @@ public class FragmentOrder extends AbstractTabFragment{
             img_status.setImageResource(R.drawable.open_order);
             accept.setEnabled(true);
             ready.setEnabled(false);
+            cancel.setEnabled(false);
         }
         if(text_status.equals("выполняется"))
         {
             img_status.setImageResource(R.drawable.inwork_order);
             accept.setEnabled(false);
             ready.setEnabled(true);
+            cancel.setEnabled(true);
         }
         if(text_status.equals("закрыт"))
         {
             img_status.setImageResource(R.drawable.close_order);
             accept.setEnabled(false);
             ready.setEnabled(false);
+            cancel.setEnabled(false);
         }
 
         sostoyanie = "з" + who.substring(1);
@@ -131,6 +135,7 @@ public class FragmentOrder extends AbstractTabFragment{
         {
             accept.setEnabled(false);
             ready.setEnabled(false);
+            cancel.setEnabled(false);
         }
 
         accept.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +144,7 @@ public class FragmentOrder extends AbstractTabFragment{
             public void onClick(View v) {
                 accept.setEnabled(false);
                 ready.setEnabled(true);
+                cancel.setEnabled(true);
                 status = "выполняется";
                 text_status = "выполняется";
                 TabOrder.text_status = "выполняется";
@@ -155,6 +161,7 @@ public class FragmentOrder extends AbstractTabFragment{
             public void onClick(View v) {
                 accept.setEnabled(false);
                 ready.setEnabled(false);
+                cancel.setEnabled(false);
                 status = "закрыт";
                 text_status = "закрыт";
                 TabOrder.text_status = "закрыт";
@@ -163,6 +170,25 @@ public class FragmentOrder extends AbstractTabFragment{
                 FragmentPhoto.photobtn.setEnabled(true);
                 FragmentPhoto.getimg.setEnabled(true);
                 img_status.setImageResource(R.drawable.close_order);
+                new RequestTask().execute(getString(R.string.adress_2));
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                accept.setEnabled(true);
+                ready.setEnabled(false);
+                cancel.setEnabled(false);
+                status = "открыт";
+                text_status = "открыт";
+                TabOrder.text_status = "открыт";
+                text_accept.setText("заказ не назначен");
+                TabOrder.who = "заказ не назначен";
+                FragmentPhoto.photobtn.setEnabled(false);
+                FragmentPhoto.getimg.setEnabled(false);
+                img_status.setImageResource(R.drawable.open_order);
                 new RequestTask().execute(getString(R.string.adress_2));
             }
         });
